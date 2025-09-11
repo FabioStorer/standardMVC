@@ -12,9 +12,9 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
-app.use(log);
-
 app.use(routes);
+
+app.use(log);
 
 app.use(errorHandling);
 
