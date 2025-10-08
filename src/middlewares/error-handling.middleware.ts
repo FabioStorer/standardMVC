@@ -1,14 +1,20 @@
 import { Request, Response, NextFunction } from "express";
+import { AppError } from "../errors/AppError";
 
-export const errorHandling = () => {
-    (err: any, req: Request, res: Response, next: NextFunction) => {
-        console.log('aqui')
-        if (err) {
-            return res.status(400).json({
-                msg: 'Ocorreu um erro!',
-                error: err.message
-            });
-        }
-        next();
+export const errorHandling = (err: any, req: Request, res: Response, next: NextFunction) => {
+    if (err instanceof AppError) {
+        console.log(err.details);
+        console.log(err.options);
+        return res.status(err.status).json({
+            error: err.code,
+            msg: err.message,
+            cid: req.headers.cid
+        });
     }
+
+    return res.status(500).json({
+        error: 'INTERNAL_ERROR',
+        msg: err.message,
+        cid: req.headers.cid
+    });
 };
